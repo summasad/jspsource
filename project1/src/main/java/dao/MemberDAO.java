@@ -1,0 +1,138 @@
+package dao;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import dto.MemberDTO;
+
+// ~~~DAO : DB 서버와 연동해서 DB 작업 담당하는 클래스
+// 1. 드라이버 로드
+// 2. 커넥션(DB서버) 얻기
+// 3. 커넥션을 통해 CRUD(insert, read, update, delete) 작업 실행
+
+// Statement : SQL의 DDL, DML 실행할 때 사용(정적 SQL 구문 실행 시 사용 - DELETE FROM usertbl WHERE id =1)
+//				동적 SQL 구문 사용시 SQL injection(DB 서버 공격하는 행동) 이라는 보안에 걸릴 수 있음
+// PreparedStatement : Statement과 같은 기능을 동적 SQL 구문 실행 시 사용 - DELETE FROM usertbl WHERE id =?)
+//						? 로 값을 넣기 때문에 편리성, 보안성이 좋다
+// Statement, PreparedStatement 둘다 정적, 동적 구문에 사용 가능
+
+// ResultSet : SELECT 결과가 담기는 객체
+
+public class MemberDAO {
+	
+	private Connection con;
+	private PreparedStatement pstmt;
+	private ResultSet rs;
+
+	static {
+		try {
+			Class.forName("oracle.jdbc.OracleDriver");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	// 연결문자열 => DriverManager
+	public Connection getConnection() throws SQLException {
+		// localhost (==127.0.0.1) : 오라클 서버가 설치된 ip 주소
+		// 1521 : 오라클 기본포트
+		// xe : 오라클 Express Edition 설치시 기본 설치되는 DB 이름
+		String url = "jdbc:oracle:thin:@localhost:1521:xe";
+		String user = "c##java";
+		String password = "12345";
+		
+		return DriverManager.getConnection(url, user, password);
+	}
+	
+	// 자원해제
+	public void close(Connection con, PreparedStatement pstmt, ResultSet rs) {
+		try {
+			if(pstmt!=null) pstmt.close();
+			if(con!=null) con.close();			
+			if(rs!=null) rs.close();			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	// CRUD 메소드
+	//public int create(String userid, String name, String password, int age, String email) {
+	public int create(MemberDTO insertDto){	
+		int result =0;
+		try {
+			// 커넥션 얻기
+			con = getConnection();
+			
+			// sql 구문 작성 후 db서버로 보내기
+			String sql = "INSERT INTO USERTBL(userid, name, password, age, email)" + "VALUES(?,?,?,?,?)";
+			pstmt = con.prepareStatement(sql);
+			//?해결
+//			pstmt.setString(1, userid);
+//			pstmt.setString(2, name);
+//			pstmt.setString(3, password);
+//			pstmt.setInt(4, age);
+//			pstmt.setString(5, email);
+			pstmt.setString(1, insertDto.getUserid());
+			pstmt.setString(2, insertDto.getName());
+			pstmt.setString(3, insertDto.getPassword());
+			pstmt.setInt(4, insertDto.getAge());
+			pstmt.setString(5, insertDto.getEmail());
+			
+			//sql 구문 실행(DML-insert,delete,update 구문 실행 결과는 숫자)
+			result= pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		} finally {
+			close(con,pstmt,rs);
+		}
+		return result;
+	}
+	public void read() {
+		
+	}
+	public MemberDTO login(MemberDTO dto) {
+		MemberDTO loginDto = null;
+		try {
+			//커넥션 열기
+			con = getConnection();
+			
+			//sql 구문 작성 후 db 서버로 보내기
+			String sql ="SELECT userid,name FROM USERTBL WHERE userid = '?' AND password='?'";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, dto.getUserid());
+			pstmt.setString(2, dto.getPassword());
+		
+			rs = pstmt.executeQuery();
+			
+			//rs에 담긴 내용을 ~~DTO로 옮기기
+			if(rs.next()) {
+				loginDto = new MemberDTO();
+				//String userid = rs.getString(1);
+				//String name = rs.getString(2);
+				loginDto.setUserid(rs.getString(1));
+				loginDto.setName(rs.getString(2));
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally{
+			close(con, pstmt, rs);			
+		}
+		return loginDto;
+	}
+	public void update() {
+		
+	}
+
+	public void delete() {
+	
+	}
+
+
+	
+}
