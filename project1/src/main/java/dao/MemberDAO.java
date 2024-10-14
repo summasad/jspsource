@@ -5,7 +5,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+import dto.ChangeDTO;
 import dto.MemberDTO;
 
 // ~~~DAO : DB 서버와 연동해서 DB 작업 담당하는 클래스
@@ -102,8 +105,34 @@ public class MemberDAO {
 		}
 		return result;
 	}
-	public void read() {
-		
+	public List<MemberDTO> read() {
+		// 전체 회원 조회
+		List<MemberDTO> list = new ArrayList<>();
+		try {
+			//커넥션 열기
+			con = getConnection();
+			
+			//sql 구문 작성 후 db 서버로 보내기
+			String sql ="SELECT userid,name,age,EMAIL FROM USERTBL";
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()){
+				// 컬럼에서 값을 꺼내서 DTO에 담기
+				MemberDTO dto = new MemberDTO();
+				dto.setUserid(rs.getString("userid"));
+				dto.setName(rs.getString("name"));
+				dto.setAge(rs.getInt("age"));
+				dto.setEmail(rs.getString("EMAIL"));
+				
+				// list에 추가
+				list.add(dto);
+				}
+			} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, pstmt, rs);
+		}
+		return list;
 	}
 	public MemberDTO login(MemberDTO dto) {
 		MemberDTO loginDto = null;
@@ -134,12 +163,48 @@ public class MemberDAO {
 		}
 		return loginDto;
 	}
-	public void update() {
+	public int update(ChangeDTO changeDto) {
+		int updateRow = 0;
+		//비밀번호 변경
+		try {
+			//커넥션 열기
+			con = getConnection();
+			
+			String sql ="UPDATE USERTBL SET PASSWORD = ? WHERE USERID = ? AND PASSWORD = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, changeDto.getChangePassword());
+			pstmt.setString(2, changeDto.getUserid());
+			pstmt.setString(3, changeDto.getCurrentPassword());
+			
+			updateRow = pstmt.executeUpdate();
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			close(con, pstmt);			
+		}
+		return updateRow;
 		
 	}
 
-	public void delete() {
-	
+	public int delete(String userid, String password) {
+		//회원 삭제
+		int deleteRow = 0;
+		try {
+			//커넥션 열기
+			con = getConnection();
+			String sql = "DELETE USERTBL WHERE USERID = ? AND PASSWORD = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, userid);
+			pstmt.setString(2, password);
+			
+			deleteRow = pstmt.executeUpdate();
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			close(con, pstmt);	
+		}return deleteRow;
 	}
 
 
