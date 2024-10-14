@@ -49,11 +49,20 @@ public class MemberDAO {
 	}
 	
 	// 자원해제
+	public void close(Connection con, PreparedStatement pstmt) {
+		try {
+			if(pstmt != null) pstmt.close();
+			if(con != null) con.close();									
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void close(Connection con, PreparedStatement pstmt, ResultSet rs) {
 		try {
-			if(pstmt!=null) pstmt.close();
-			if(con!=null) con.close();			
-			if(rs!=null) rs.close();			
+			if(pstmt != null) pstmt.close();
+			if(con != null) con.close();			
+			if(rs != null) rs.close();			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -68,7 +77,7 @@ public class MemberDAO {
 			con = getConnection();
 			
 			// sql 구문 작성 후 db서버로 보내기
-			String sql = "INSERT INTO USERTBL(userid, name, password, age, email)" + "VALUES(?,?,?,?,?)";
+			String sql = "INSERT INTO USERTBL(userid, name, password, age, email) VALUES(?,?,?,?,?)";
 			pstmt = con.prepareStatement(sql);
 			//?해결
 //			pstmt.setString(1, userid);
@@ -89,7 +98,7 @@ public class MemberDAO {
 			
 			e.printStackTrace();
 		} finally {
-			close(con,pstmt,rs);
+			close(con,pstmt);
 		}
 		return result;
 	}
@@ -103,7 +112,7 @@ public class MemberDAO {
 			con = getConnection();
 			
 			//sql 구문 작성 후 db 서버로 보내기
-			String sql ="SELECT userid,name FROM USERTBL WHERE userid = '?' AND password='?'";
+			String sql ="SELECT userid,name FROM USERTBL WHERE userid = ? AND password=?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, dto.getUserid());
 			pstmt.setString(2, dto.getPassword());

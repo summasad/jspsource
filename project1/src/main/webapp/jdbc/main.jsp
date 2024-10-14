@@ -14,7 +14,7 @@ MemberDTO loginDto = (MemberDTO)session.getAttribute("loginDto"); %>
 	<a class="btn btn-success" href="">비밀번호 수정</a>
 	<a class="btn btn-danger" href="">탈퇴</a>
 </div>
-<% } %>	
+
 <table class="table mt-4">
   <thead>
     <tr>
@@ -33,5 +33,5 @@ MemberDTO loginDto = (MemberDTO)session.getAttribute("loginDto"); %>
     </tr>
   </tbody>
 </table>
-
+<% } %>	
 <%@ include file = "footer.jsp"  %>
