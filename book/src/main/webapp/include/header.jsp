@@ -1,3 +1,4 @@
+<%@page import="dto.MemberDTO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -11,16 +12,29 @@
   <nav class="py-2 bg-body-tertiary border-bottom">
     <div class="container d-flex flex-wrap">
       <ul class="nav me-auto">
-        <li class="nav-item"><a href="/" class="nav-link link-body-emphasis px-2 active" aria-current="page">Home</a></li>
+        <li class="nav-item"><a href="../include/index.jsp" class="nav-link link-body-emphasis px-2 active" aria-current="page">Home</a></li>
         <li class="nav-item"><a href="../book/list_pro.jsp" class="nav-link link-body-emphasis px-2">도서목록</a></li>
         <li class="nav-item"><a href="../book/create.jsp" class="nav-link link-body-emphasis px-2">도서입력</a></li>
         <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">FAQs</a></li>
         <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">About</a></li>
       </ul>
+      <%
+      //세션에 담긴 정보는 어느 페이지(jsp, sevlet)던 사용 가능함
+      MemberDTO loginDto = (MemberDTO)session.getAttribute("loginDto");
+      if(loginDto == null){    	       
+   	 %>
+ 	  <!-- 로그인 전 보여줄 메뉴 -->
       <ul class="nav">
-        <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">Login</a></li>
-        <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">Sign up</a></li>
+        <li class="nav-item"><a href="../member/login.jsp" class="nav-link link-body-emphasis px-2">Login</a></li>
+        <li class="nav-item"><a href="../member/register.jsp" class="nav-link link-body-emphasis px-2">Sign up</a></li>
       </ul>
+      <% } else{ %>
+      <!-- 로그인 후 보여줄 메뉴 -->
+       <ul class="nav">
+        <li class="nav-item"><a href="../member/logout_pro.jsp" class="nav-link link-body-emphasis px-2">Logout</a></li>
+        <li class="nav-item"><a href="../member/info.jsp" class="nav-link link-body-emphasis px-2">Info</a></li>
+      </ul>
+      <% } %>
     </div>
   </nav>
   <header class="py-3 mb-4 border-bottom">
