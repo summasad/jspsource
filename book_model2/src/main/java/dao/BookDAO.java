@@ -30,7 +30,7 @@ public class BookDAO {
 //		}
 //	}
 
-	public Connection getConnection() {
+	public Connection getConnection(){
 		Context initContext;
 		try {
 			initContext = new InitialContext();
@@ -69,25 +69,27 @@ public class BookDAO {
 
 	// CRUD 메소드
 
-	// R(read) - 전체조회, 특정(pk) 조회, 제목 조회
-	// 조회 메소드 작성
-	// 리턴 타입 : List<~~DTO> or ~~DTO ==> sql 구문 보고 결정
-	// List<~~DTO> : 값이 복수일때 = where 절 없는 경우, where 절이 pk이 아니면
-	// ~~DTO : 값이 하나일때 = where 절이 pk인 경우
+	// R(Read) - 전체조회, 특정(pk) 조회, 제목 조회
+	// 조회 메소드 작성하기
+	// 리턴 타입 : List<~~~~DTO> or ~~~DTO ==> sql 구문 보고 결정
+	// List<~~~~DTO> : where 절 없는 경우, where 절이 pk 가 아니면
+	// ~~~DTO : where 절이 pk 인 경우
 
 	// 전달인자 : () 에 어떻게 작성할 것인가?
-	// => sql 구문의 ? 보고 결정
+	// sql 구문의 ? 보고 결정
 	public BookDTO getRow(int code) {
-		BookDTO dto = null;
-		try {
-			con = getConnection();
-			String spl = "SELECT * FROM BOOKTBL WHERE CODE = ?";
-			pstmt = con.prepareStatement(spl);
 
-			// sql 구문의 ? 해결
+		BookDTO dto = null;
+
+		try {
+
+			con = getConnection();
+			String sql = "SELECT * FROM booktbl WHERE code = ?";
+			pstmt = con.prepareStatement(sql);
+			// sql 구문 ? 해결
 			pstmt.setInt(1, code);
 			rs = pstmt.executeQuery();
-			// where 전에 pk 사용된 경우 하나만 추출됨
+			// where pk 사용된 경우 하나만 추출됨
 			if (rs.next()) {
 				dto = new BookDTO();
 				dto.setCode(rs.getInt("code"));
@@ -102,19 +104,23 @@ public class BookDAO {
 			close(con, pstmt, rs);
 		}
 		return dto;
-
 	}
 
-	public List<BookDTO> getList() {
+	public List<BookDTO> getList(String keyword) {
+		// 전체조회
 		List<BookDTO> list = new ArrayList<BookDTO>();
 
 		try {
+
 			con = getConnection();
-			String sql = "SELECT * FROM BOOKTBL";
+			String sql = "SELECT * FROM booktbl WHERE title LIKE ? ORDER BY CODE DESC";
 			pstmt = con.prepareStatement(sql);
+			// sql 구문 ? 해결
+			pstmt.setString(1, "%"+keyword+"%");
 			rs = pstmt.executeQuery();
+
 			while (rs.next()) {
-				// 행 하나씩 DTO에 담기 List 에 추가
+				// dto 에 컬럼 별로 담고 list 에 추가
 				BookDTO dto = new BookDTO();
 				dto.setCode(rs.getInt("code"));
 				dto.setTitle(rs.getString("title"));
@@ -123,7 +129,6 @@ public class BookDAO {
 
 				list.add(dto);
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -132,22 +137,23 @@ public class BookDAO {
 		return list;
 	}
 
-	// U(update) - 수정 메소드
+	// U(Update) - 수정
+	// 수정 메소드 작성하기
 	// 리턴타입 : int
-	// 전달인자 : ?보고 결정
 	public int update(BookDTO updateDto) {
+
 		int updateRow = 0;
+
 		try {
+
 			con = getConnection();
-			String sql = "UPDATE BOOKTBL SET PRICE = ?, DESCRIPTION = ? WHERE CODE = ?";
+			String sql = "UPDATE booktbl SET price = ?, DESCRIPTION=? WHERE code = ?";
 			pstmt = con.prepareStatement(sql);
-			
 			pstmt.setInt(1, updateDto.getPrice());
 			pstmt.setString(2, updateDto.getDescription());
 			pstmt.setInt(3, updateDto.getCode());
-			
+
 			updateRow = pstmt.executeUpdate();
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -155,46 +161,64 @@ public class BookDAO {
 		}
 		return updateRow;
 	}
-	// D(delete) - 삭제
-	// 리턴 타입 int
+
+	// D(Delete) - 삭제
+	// 삭제 메소드 작성하기
+	// 리턴타입 : int
 	public int delete(int code) {
+
 		int deleteRow = 0;
+
 		try {
+
 			con = getConnection();
-			String sql = "DELETE BOOKTBL WHERE CODE = ?";
+			String sql = "DELETE FROM booktbl WHERE code = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, code);
 			deleteRow = pstmt.executeUpdate();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			close(con, pstmt);
-			
-		}return deleteRow;
-	}
-	// C(create) - 삽입
-	// 리턴 타입 int
-	public int insert(BookDTO insertDto) {
-		int insertRow = 0; 
-		try {
-			con = getConnection();
-			String sql = "INSERT INTO BOOKTBL VALUES(?, ?, ?, ?, ?)";
-			pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1,insertDto.getCode());
-			pstmt.setString(2,insertDto.getTitle());
-			pstmt.setString(3,insertDto.getWriter());
-			pstmt.setInt(4,insertDto.getPrice());
-			pstmt.setString(5,insertDto.getDescription());
-			
-			insertRow = pstmt.executeUpdate();
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			close(con, pstmt);
 		}
+		return deleteRow;
+	}
+
+	// C(Create) - 삽입
+	// 삽입 메소드 작성하기
+	// 리턴타입 : int
+	public int insert(BookDTO insertDto) {
+		int insertRow = 0;
+		try {
+			
+			con = getConnection();
+			String sql="INSERT INTO booktbl(code, title, writer, price, description) values(?,?,?,?,?)";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, insertDto.getCode());
+			pstmt.setString(2, insertDto.getTitle());
+			pstmt.setString(3, insertDto.getWriter());
+			pstmt.setInt(4, insertDto.getPrice());
+			pstmt.setString(5, insertDto.getDescription());
+			
+			insertRow = pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			close(con, pstmt);
+		}
 		return insertRow;
 	}
-	
-
 }
+
+
+
+
+
+
+
+
+
+
+

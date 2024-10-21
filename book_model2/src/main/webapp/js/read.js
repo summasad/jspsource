@@ -1,5 +1,4 @@
-//목록 버튼 클릭 시 리스트 로 이동
+//목록 클릭 시 리스트로 이동(location)
 document.querySelector(".btn-primary").addEventListener("click",()=>{
-	//페이지 이동
-	location.href = "/list.do"
-});
+	location.href = "/list.do?keyword="+keyword;
+})

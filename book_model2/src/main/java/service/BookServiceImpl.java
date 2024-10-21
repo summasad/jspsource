@@ -8,10 +8,10 @@ import dto.BookDTO;
 public class BookServiceImpl implements BookService {
 	
 	private BookDAO dao = new BookDAO();
-
+	
 	@Override
-	public List<BookDTO> list() {		
-		return dao.getList();
+	public List<BookDTO> list(String keyword) {		
+		return dao.getList(keyword);
 	}
 
 	@Override
@@ -35,3 +35,13 @@ public class BookServiceImpl implements BookService {
 	}
 
 }
+
+
+
+
+
+
+
+
+
+

@@ -8,9 +8,7 @@ public class ActionForward {
 	// pageContext.forward("경로")
 	
 	private String path;
-	private boolean redirect; //true(sendRedirect)
-	
-	
+	private boolean redirect;  //true(sendRedirect)	
 	
 	public ActionForward(String path, boolean redirect) {
 		super();
@@ -18,9 +16,9 @@ public class ActionForward {
 		this.redirect = redirect;
 	}
 	public ActionForward() {
-		super();
-		// TODO Auto-generated constructor stub
+		super();		
 	}
+	
 	public String getPath() {
 		return path;
 	}
@@ -32,7 +30,5 @@ public class ActionForward {
 	}
 	public void setRedirect(boolean redirect) {
 		this.redirect = redirect;
-	}
-	
-	
+	}	
 }
