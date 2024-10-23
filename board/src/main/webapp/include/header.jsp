@@ -1,7 +1,7 @@
 <%@page import="org.eclipse.jdt.internal.compiler.ast.PrefixExpression"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-	<%@ taglib uri= "http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -41,13 +41,11 @@
 			<!-- Sidebar - Brand -->
 			<a
 				class="sidebar-brand d-flex align-items-center justify-content-center"
-				href="index.html">
+				href="http://localhost:8090/list.do?criteria=&keyword=&page=1&amount=10">
 				<div class="sidebar-brand-icon rotate-n-15">
 					<i class="fas fa-laugh-wink"></i>
 				</div>
-				<div class="sidebar-brand-text mx-3">
-					SB Admin <sup>2</sup>
-				</div>
+				<div class="sidebar-brand-text mx-3">Board</div>
 			</a>
 
 			<!-- Divider -->
@@ -55,8 +53,8 @@
 
 			<!-- Nav Item - Dashboard -->
 			<li class="nav-item active"><a class="nav-link"
-				href="index.html"> <i class="fas fa-fw fa-tachometer-alt"></i> <span>Dashboard</span></a>
-			</li>
+				href="/board/create.jsp"> <i class="fas fa-fw fa-tachometer-alt"></i>
+					<span>새글작성</span></a></li>
 
 			<!-- Divider -->
 			<hr class="sidebar-divider">

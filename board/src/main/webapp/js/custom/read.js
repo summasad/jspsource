@@ -3,19 +3,42 @@
 const actionForm = document.querySelector("#actionForm");
 const readForm = document.querySelector("#readForm");
 
+// read.jsp에서 수정 클릭시
+// actionForm action="/modify.do" 수정 후 submit
+const infoBtn = document.querySelector("#readForm .btn-info")
+if(infoBtn){
+	infoBtn	.addEventListener("click", () => {
+		//값이 있다면
+		actionForm.action = "/modify.do";
+		actionForm.submit();
+	});
+}
+
 document.querySelector("#readForm .btn-success").addEventListener("click", () => {
+	//actionform bno 요소 제거
 	actionForm.querySelector("[name='bno']").remove();
-	actionForm.action = "/list.do"
+	actionForm.action = "/list.do";
 	actionForm.submit();
 });
 
-// 수정 클릭시
-// actionForm action="/modify.do" 수정 후 submit
-document.querySelector("#readForm .btn-primary").addEventListener("click", () => {
-	//값이 있다면
-	actionForm.action = "/modify.do"
-	actionForm.submit();
-});
+// 답변 클릭 시 actionForm action="/replyView.do" 수정 후 submit
+const replyBtn = document.querySelector("#readForm .btn-secondary");
+if(replyBtn){
+	replyBtn.addEventListener("click", () => {
+			actionForm.action = "/replyView.do";
+			actionForm.submit();
+		});
+}
+
+// 삭제 클릭시
+// readForm action= /delete.do 변경 후 readform submit
+const removeBtn = document.querySelector("#readForm .btn-danger")
+if (removeBtn) {
+	removeBtn.addEventListener("click", () => {
+		readForm.action = "/delete.do";
+		readForm.submit();
+	});
+}
 
 //modify.jsp에서 수정 클릭시 (submit)
 //readForm password 값이 있는 지 확인하고
@@ -44,9 +67,5 @@ readForm.addeaddEventListener("submit", (e) => {
 })
 
 
-// 삭제 클릭시
-// readForm action= /delete.do 변경 후 readform submit
-document.querySelector("#readForm .btn-danger").addEventListener("click", () => {
-	readForm.action = "/delete.do"
-	readForm.submit();
-});
+
+

@@ -31,7 +31,49 @@ document.querySelector("tbody").addEventListener("click",(e)=>{
 	
 	//actionForm submit
 	//action : /read.do 변경
-	actionForm.action = "/read.do";
+	actionForm.action = "/cntupdate.do";
 	actionForm.submit();		
 	
 });
+
+// 검색 기능
+// criteria of keyword 입력이 안된 경우 form submit 중지
+// 적절한 메세지 띄우기
+
+	
+const searchForm = document.querySelector("#searchForm")
+document.querySelector("#searchForm .btn-warning").addEventListener("click",(e)=>{
+	e.preventDefault();
+	const criteria = searchForm.querySelector("[name='criteria']");
+	const keyword = searchForm.querySelector("[name='keyword']");
+	if(criteria.value === "n"){		
+		alert("검색 조건을 선택하세요");
+		return;
+	} else if(keyword.value === ""){
+		alert("검색어를 입력하세요");
+		keyword.focus();
+		return;
+	}
+	searchForm.submit();
+});
+
+// 하단의 페이지 나누기 기능
+// 1,2,3,4,5 숫자 누를 떄 actionForm submit => list.do
+// href 값 가져와서 actionForm 의 page요소값으로 대체
+
+const pagination = document.querySelector(".pagination");
+pagination.addEventListener("click",(e)=>{
+	e.preventDefault();
+	
+	actionForm.querySelector("[name='bno']").remove();
+	actionForm.querySelector("[name='page']").value = e.target.getAttribute("href");
+
+	actionForm.submit();
+});
+
+
+
+
+
+
+

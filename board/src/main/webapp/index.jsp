@@ -15,7 +15,7 @@
 	<main>
 		<div class="container py-4">
 			<header class="pb-3 mb-4 border-bottom">
-				<a href="/list.do"
+				<a href="http://localhost:8090/list.do?criteria=&keyword=&page=1&amount=10"
 					class="d-flex align-items-center text-body-emphasis text-decoration-none">
 					<svg xmlns="http://www.w3.org/2000/svg" width="40" height="32"
 						class="me-2" viewBox="0 0 118 94" role="img">
