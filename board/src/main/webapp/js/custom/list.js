@@ -67,7 +67,7 @@ pagination.addEventListener("click",(e)=>{
 	
 	actionForm.querySelector("[name='bno']").remove();
 	actionForm.querySelector("[name='page']").value = e.target.getAttribute("href");
-
+	actionForm.action = "/list.do";
 	actionForm.submit();
 });
 
