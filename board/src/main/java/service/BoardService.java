@@ -17,5 +17,5 @@ public interface BoardService {
 	
 	boolean reply(BoardDTO replyDto);
 	
-	int getTotalRows();
+	int getTotalRows(SearchDTO searchDTO);
 }
